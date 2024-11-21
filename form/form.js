@@ -1,32 +1,36 @@
-//TODO: Add a way to add custom attributes to the form element
 export class Form {
-  constructor(id, children = [], method, action) {
-    this.id =
-      id || `form${Math.random().toString(36).substr(2, 9)}`.replace(".", "");
+  constructor(id, children = [], method, action, theme = "blue") {
+    this.id = id || `form${Math.random().toString(36).substring(2, 11)}`;
     this.children = children;
     this.method = method;
     this.action = action;
+    this.theme = theme;
+  }
+
+  addThemeClass(element) {
+    if (this.theme) {
+      element.classList.add(this.theme);
+    }
   }
 
   render() {
     const form = document.createElement("form");
     form.id = this.id;
-    if (this.method) form.method = this.method;
-    if (this.action) form.action = this.action;
+    form.method = this.method;
+    form.action = this.action;
     this.children.forEach((child) => {
       form.appendChild(child.render());
     });
+    this.addThemeClass(form);
     document.body.appendChild(form);
   }
 }
 
-//TODO: If  id is no specified, what should Id be?
 export class Input {
   constructor(type = "text", id, stateName = "value", stateValue = "") {
     this.stateName = stateName;
     this.state = { [stateName]: stateValue };
-    this.id =
-      id || `input${Math.random().toString(36).substr(2, 9)}`.replace(".", "");
+    this.id = id || `input${Math.random().toString(36).substring(2, 11)}`;
     this.type = type;
   }
 
@@ -64,7 +68,7 @@ export class Button {
   constructor(label = "Submit", onClick = () => {}, id) {
     this.label = label;
     this.onClick = onClick;
-    this.id = id || `button${Math.random() * Infinity}`;
+    this.id = id || `button${Math.random().toString(36).substring(2, 11)}`;
   }
 
   render() {
@@ -73,40 +77,5 @@ export class Button {
     button.innerText = this.label;
     button.onclick = this.onClick;
     return button;
-  }
-}
-
-export class FormExample {
-  static login() {
-    const usernameInput = new Input("text", "username", "username");
-    const passwordInput = new Input("password", "password", "password");
-    const submitButton = new Button("Login", () => {
-      console.log(
-        "Logging in with",
-        usernameInput.getState(),
-        passwordInput.getState()
-      );
-    });
-    return new Form("loginForm", [usernameInput, passwordInput, submitButton]);
-  }
-
-  static register() {
-    const emailInput = new Input("email", "email", "email");
-    const usernameInput = new Input("text", "username", "username");
-    const passwordInput = new Input("password", "password", "password");
-    const submitButton = new Button("Register", () => {
-      console.log(
-        "Registering with",
-        emailInput.getState(),
-        usernameInput.getState(),
-        passwordInput.getState()
-      );
-    });
-    return new Form(
-      "registerForm",
-      [emailInput, usernameInput, passwordInput, submitButton],
-      "POST",
-      "/api/register"
-    );
   }
 }
