@@ -65,3 +65,73 @@
 .red button:hover {
     background-color: #c82333;
 }
+
+/* GREEN THEME */
+
+.green {
+    background-color: #d4f4d4;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.green input[type="text"],
+.green input[type="email"],
+.green input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #28a745;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.green button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.green button:hover {
+    background-color: #218838;
+}
+
+/* YELLOW THEME */
+
+.yellow {
+    background-color: #fff3cd;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.yellow input[type="text"],
+.yellow input[type="email"],
+.yellow input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.yellow button {
+    background-color: #ffc107;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.yellow button:hover {
+    background-color: #e0a800;
+}
