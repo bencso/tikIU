@@ -1,9 +1,15 @@
-import { Button, Form, Input } from "./form.js";
+import {
+  Button,
+  Form,
+  Input
+} from "./form.js";
 
 class BaseForm extends HTMLElement {
-  constructor(inputs, buttonText, buttonHandler, formId) {
+  constructor(inputs, buttons, formId) {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({
+      mode: "open"
+    });
 
     const theme = this.getAttribute("theme") || "blue";
 
@@ -15,17 +21,22 @@ class BaseForm extends HTMLElement {
     }
 
     this.inputs = inputs.map((input) => new Input(...input));
-    const button = new Button(buttonText, buttonHandler, `${formId}Btn`);
-
-    this.form = new Form(formId, [...this.inputs, button], "POST", "#", theme);
+    this.buttons = buttons.map((button) => new Button(...button));
+    this.form = new Form(formId, [...this.inputs, ...this.buttons], "POST", "#", theme);
     this.form.render();
   }
 
   getInputStates() {
-    return this.inputs.reduce((states, input) => {
+    return JSON.stringify(this.inputs.reduce((states, input) => {
       states[input.id] = input.getState();
       return states;
-    }, {});
+    }, {}));
+  }
+
+  clearStates() {
+    this.inputs.forEach((input) => {
+      input.clearState();
+    });
   }
 }
 
@@ -36,19 +47,25 @@ export class Login extends BaseForm {
         ["text", "login-username", "username"],
         ["password", "login-password", "password"],
       ],
-      "Login",
-      (event) => this.handleLogin(event),
+      [
+        [
+          "Login", (event) => this.handleLogin(event), "loginBtn"
+        ],
+        ["Clear", (event) => this.handleClear(event), "clearBtn"]
+      ],
       "loginForm"
     );
   }
 
   handleLogin(event) {
     event.preventDefault();
-    const { "login-username": username, "login-password": password } =
-      this.getInputStates();
-    console.log("Login button clicked", { username, password });
-
+    console.log("Login button clicked", JSON.parse(this.getInputStates()));
     // LOGIC
+  }
+
+  handleClear(event) {
+    event.preventDefault();
+    this.clearStates();
   }
 }
 
@@ -61,27 +78,16 @@ export class Register extends BaseForm {
         ["password", "register-password", "password"],
         ["password", "register-confirm-password", "confirmPassword"],
       ],
-      "Register",
-      (event) => this.handleRegister(event),
+      [
+        ["Register", (event) => this.handleRegister(event), "registerBtn"]
+      ],
       "registerForm"
     );
   }
 
   handleRegister(event) {
     event.preventDefault();
-    const {
-      "register-username": username,
-      "register-email": email,
-      "register-password": password,
-      "register-confirm-password": confirmPassword,
-    } = this.getInputStates();
-    console.log("Register button clicked", {
-      username,
-      email,
-      password,
-      confirmPassword,
-    });
-
+    console.log("Register button clicked", JSON.parse(this.getInputStates()));
     // LOGIC
   }
 }
