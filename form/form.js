@@ -32,10 +32,11 @@ export class Form {
     form.method = this.method;
     form.action = this.action;
     this.children.forEach((child) => {
+      const childElement = child.render();
       if (child instanceof Button) {
-        buttonRow.appendChild(child.render());
+        buttonRow.appendChild(childElement);
       } else {
-        form.appendChild(child.render());
+        form.appendChild(childElement);
       }
     });
     form.appendChild(buttonRow);
@@ -45,7 +46,7 @@ export class Form {
 }
 
 export class Input {
-  constructor(type = "text", id, stateName = "value", stateValue = "") {
+  constructor(type = "text", id, stateName = "email", stateValue = "") {
     this.stateName = stateName;
     this.state = {
       [stateName]: stateValue
@@ -59,7 +60,6 @@ export class Input {
       ...this.state,
       ...newState
     };
-    console.error(this.state);
   }
 
   clearState() {
@@ -69,14 +69,10 @@ export class Input {
   }
 
   getState() {
-    return this.state;
+    return JSON.stringify(this.state);
   }
 
-  renderEmail() {
-    return new EmailInput(this.id).render();
-  }
-
-  renderDefault() {
+  render() {
     const label = document.createElement("label");
     const input = document.createElement("input");
     label.htmlFor = this.id;
@@ -85,51 +81,30 @@ export class Input {
     input.type = this.type;
     input.id = this.id;
     input.name = this.stateName;
-    input.state = this.state;
     input.value = this.state[this.stateName];
-    input.addEventListener("input", this.onChange);
+    input.addEventListener("input", this.onChange.bind(this));
     return label;
   }
 
-  render() {
-    switch (this.type) {
-      case "email":
-        return this.renderEmail();
-      default:
-        return this.renderDefault();
-    }
-  }
-
-  onChange = (event) => {
+  onChange(event) {
     this.setState({
       [this.stateName]: event.target.value
     });
-  };
+  }
 }
 
-class EmailInput extends Input {
+export class EmailInput extends Input {
   constructor(id) {
-    super("email", id);
-    this.state = {
-      username: "",
-      domain: "",
-      value: ""
-    };
+    super("email", id, id, "");
+    this.mailuser = "";
+    this.maildomain = "";
   }
 
-  onChange = (event) => {
-    if (event.target.id.includes("username")) {
-      this.setState({
-        username: event.target.value
-      });
-    }
-    if (event.target.id.includes("domain")) {
-      this.setState({
-        domain: event.target.value
-      });
-    }
+  onChange(event) {
+    if (event.target.id.includes("username")) this.mailuser = event.target.value;
+    if (event.target.id.includes("domain")) this.maildomain = event.target.value;
     this.setState({
-      [this.stateName]: `${this.state.username}@${this.state.domain}`
+      [this.stateName]: `${this.mailuser}@${this.maildomain}`
     });
   }
 
@@ -137,23 +112,31 @@ class EmailInput extends Input {
     const label = document.createElement("label");
     const username = document.createElement("input");
     const domain = document.createElement("input");
+    const div = document.createElement("div");
+    const rowDiv = document.createElement("div");
+    const separator = document.createTextNode("@");
     label.htmlFor = this.id;
     label.innerText = this.id;
+    div.appendChild(label);
+    rowDiv.appendChild(username);
+    rowDiv.appendChild(separator);
+    rowDiv.appendChild(domain);
+    rowDiv.style.display = "flex";
+    rowDiv.style.flexDirection = "row";
+    rowDiv.style.gap = "10px";
+    rowDiv.style.alignItems = "center";
     username.type = "text";
     username.id = `${this.id}-username`;
     username.name = "username";
-    username.addEventListener("input", this.onChange);
-    username.value = this.state.username;
-    username.state = this.state;
+    username.value = this.mailuser;
+    username.addEventListener("input", this.onChange.bind(this));
     domain.type = "text";
     domain.id = `${this.id}-domain`;
     domain.name = "domain";
-    domain.addEventListener("input", this.onChange);
-    domain.value = this.state.domain;
-    domain.state = this.state;
-    label.appendChild(username);
-    label.appendChild(domain);
-    return label;
+    domain.value = this.maildomain;
+    domain.addEventListener("input", this.onChange.bind(this));
+    div.appendChild(rowDiv);
+    return div;
   }
 }
 
