@@ -1,7 +1,8 @@
 import {
   Button,
   Form,
-  Input
+  Input,
+  EmailInput
 } from "./form.js";
 
 class BaseForm extends HTMLElement {
@@ -20,7 +21,10 @@ class BaseForm extends HTMLElement {
       document.head.appendChild(link);
     }
 
-    this.inputs = inputs.map((input) => new Input(...input));
+    this.inputs = inputs.map((args) => {
+      if (args[0] == "email") return new EmailInput(...args);
+      else return new Input(...args);
+    })
     this.buttons = buttons.map((button) => new Button(...button));
     this.form = new Form(formId, [...this.inputs, ...this.buttons], "POST", "#", theme);
     this.form.render();
@@ -28,7 +32,11 @@ class BaseForm extends HTMLElement {
   }
 
   getInputStates() {
-    return JSON.stringify(this.inputs.map((input) => input.getState()));
+    const values = {};
+    this.inputs.forEach((input) => {
+      Object.assign(values, input.state);
+    });
+    return JSON.stringify(values);
   }
 
   clearStates() {
@@ -58,7 +66,7 @@ export class Login extends BaseForm {
   handleLogin(event) {
     event.preventDefault();
     console.log("Login button clicked", JSON.parse(this.getInputStates()));
-    // LOGIC
+    //! LOGIC
   }
 
   handleClear(event) {
@@ -86,9 +94,11 @@ export class Register extends BaseForm {
   handleRegister(event) {
     event.preventDefault();
     console.log("Register button clicked", JSON.parse(this.getInputStates()));
-    // LOGIC
+    //! LOGIC
   }
 }
+
+//TODO: Add custom form with JSON file
 
 customElements.define("login-form", Login);
 customElements.define("register-form", Register);
