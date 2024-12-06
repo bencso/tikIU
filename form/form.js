@@ -24,6 +24,8 @@ export class Form {
   render() {
     const form = document.createElement("form");
     const buttonRow = document.createElement("div");
+    const stateValues = document.createElement("span");
+    stateValues.id = this.id + "-state";
     buttonRow.classList.add("button-row");
     buttonRow.style.display = "flex";
     buttonRow.style.flexDirection = "row";
@@ -40,6 +42,7 @@ export class Form {
       }
     });
     form.appendChild(buttonRow);
+    form.appendChild(stateValues);
     this.addThemeClass(form);
     document.body.appendChild(form);
   }
@@ -66,24 +69,27 @@ export class Input {
     this.setState({
       [this.stateName]: ""
     });
+    document.getElementById(this.id).value = "";
   }
 
   getState() {
-    return JSON.stringify(this.state);
+    return this.state;
   }
 
   render() {
+    const div = document.createElement("div");
     const label = document.createElement("label");
     const input = document.createElement("input");
     label.htmlFor = this.id;
     label.innerText = this.id;
-    label.appendChild(input);
     input.type = this.type;
     input.id = this.id;
     input.name = this.stateName;
     input.value = this.state[this.stateName];
     input.addEventListener("input", this.onChange.bind(this));
-    return label;
+    div.appendChild(label);
+    div.appendChild(input);
+    return div;
   }
 
   onChange(event) {
@@ -94,8 +100,8 @@ export class Input {
 }
 
 export class EmailInput extends Input {
-  constructor(id) {
-    super("email", id, id, "");
+  constructor(type = "email", id, stateName = id, stateValue = "") {
+    super(type, id, stateName, stateValue);
     this.mailuser = "";
     this.maildomain = "";
   }
@@ -137,6 +143,52 @@ export class EmailInput extends Input {
     domain.addEventListener("input", this.onChange.bind(this));
     div.appendChild(rowDiv);
     return div;
+  }
+}
+
+export class PasswordInput extends Input {
+  constructor(type = "password", id, stateName = id, stateValue = "") {
+    super(type, id, stateName, stateValue);
+  }
+
+  render() {
+    const div = document.createElement("div");
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    const labelState = document.createElement("span");
+    const showPasswordButton = document.createElement("span");
+    labelState.id = this.id + "-state";
+    showPasswordButton.innerText = "🙉";
+    showPasswordButton.style.cursor = "pointer";
+    showPasswordButton.style.transition = "0.3s";
+    showPasswordButton.style.userSelect = "none";
+    showPasswordButton.style.fontSize = "1.5em";
+    showPasswordButton.style.position = "absolute";
+    showPasswordButton.style.transform = "translate(-130%, 30%)";
+    showPasswordButton.addEventListener("click", this.togglePasswordVisibility.bind(this));
+    label.htmlFor = this.id;
+    label.innerText = this.id;
+    input.type = this.type;
+    input.id = this.id;
+    input.name = this.stateName;
+    input.value = this.state[this.stateName];
+    input.addEventListener("input", this.onChange.bind(this));
+    div.appendChild(label);
+    div.appendChild(input);
+    div.appendChild(showPasswordButton);
+    div.appendChild(labelState);
+    return div;
+  }
+
+  togglePasswordVisibility(event) {
+    event.preventDefault();
+    if (event.target.previousElementSibling.type === "password") {
+      event.target.previousElementSibling.type = "text";
+      event.target.innerText = "🙈";
+    } else {
+      event.target.previousElementSibling.type = "password";
+      event.target.innerText = "🙉";
+    }
   }
 }
 
