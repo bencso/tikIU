@@ -2,7 +2,8 @@ import {
   Button,
   Form,
   Input,
-  EmailInput
+  EmailInput,
+  PasswordInput
 } from "./form.js";
 
 class BaseForm extends HTMLElement {
@@ -13,7 +14,6 @@ class BaseForm extends HTMLElement {
     });
 
     const theme = this.getAttribute("theme") || "blue";
-
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = `form/themes/theme.css`;
@@ -23,6 +23,7 @@ class BaseForm extends HTMLElement {
 
     this.inputs = inputs.map((args) => {
       if (args[0] == "email") return new EmailInput(...args);
+      if (args[0] == "password") return new PasswordInput(...args);
       else return new Input(...args);
     })
     this.buttons = buttons.map((button) => new Button(...button));
@@ -31,11 +32,13 @@ class BaseForm extends HTMLElement {
     console.log(this.form);
   }
 
+  //TODO: IF VÁLTOZIK EZ A SZAR, AKKOR ÍRJA KI A FORM INPUTOOKNAK KÜLÖN IS
   getInputStates() {
     const values = {};
     this.inputs.forEach((input) => {
       Object.assign(values, input.state);
     });
+    document.getElementById(this.form.id + "-state").textContent = JSON.stringify(values);
     return JSON.stringify(values);
   }
 
@@ -50,8 +53,8 @@ export class Login extends BaseForm {
   constructor() {
     super(
       [
-        ["text", "login-username", "username"],
-        ["password", "login-password", "password"],
+        ["text", "login-username", "logusername"],
+        ["password", "login-password", "logpassword"],
       ],
       [
         [
@@ -79,10 +82,11 @@ export class Register extends BaseForm {
   constructor() {
     super(
       [
-        ["text", "register-username", "username"],
-        ["email", "register-email", "email"],
-        ["password", "register-password", "password"],
-        ["password", "register-confirm-password", "confirmPassword"],
+        ["text", "register-username", "regusername"],
+        ["email", "register-email", "regemail"],
+        ["password", "register-password", "regpassword"],
+        ["date", "register-bday", "regbday"],
+        ["password", "register-confirm-password", "regconfirmPassword"],
       ],
       [
         ["Register", (event) => this.handleRegister(event), "registerBtn"]

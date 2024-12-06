@@ -1,3 +1,16 @@
+.field-icon {
+    float: right;
+    margin-left: -25px;
+    margin-top: -25px;
+    position: relative;
+    z-index: 2;
+}
+
+.container {
+    padding-top: 50px;
+    margin: auto;
+}
+
 .blue {
     background-color: #f0f8ff;
     padding: 20px;
@@ -8,7 +21,9 @@
 
 .blue input[type="text"],
 .blue input[type="email"],
-.blue input[type="password"] {
+.blue input[type="password"],
+.blue input[type="date"],
+.blue input[type="number"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -43,7 +58,9 @@
 
 .red input[type="text"],
 .red input[type="email"],
-.red input[type="password"] {
+.red input[type="password"],
+.red input[type="date"],
+.red input[type="number"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -78,7 +95,9 @@
 
 .green input[type="text"],
 .green input[type="email"],
-.green input[type="password"] {
+.green input[type="password"],
+.green input[type="date"],
+.green input[type="number"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -113,7 +132,9 @@
 
 .yellow input[type="text"],
 .yellow input[type="email"],
-.yellow input[type="password"] {
+.yellow input[type="password"],
+.yellow input[type="date"],
+.yellow input[type="number"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
